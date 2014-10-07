@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+	<head>
+        <script>
+            var basePath = '{{ config.BASE_PATH }}';
+        </script>
+
+		<script type="text/javascript" src="{{ url_for('static', filename='jQuery/jquery-1.11.1.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='election-results-visualizer.js') }}"></script>
+
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-53558662-2', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+		
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+        {% block scripts %}
+        {% endblock %}
+
+        {% block moreScripts %}
+        {% endblock %}
+
+    <title>Election Results Visualizer</title>
+
+    
+  <body>
+
+    <div class="push-for-footer"></div>
+
+    <div class="footer">
+      <div class="footer-container" align="center">
+        <p class="text-muted">
+          <br/>Made in Kosovo by <a href="http://assemblio.com" target="_blank">Assemblio LLC</a> and <a href="http://opendatakosovo.org" target="_blank">Open Data Kosovo</a>.
+          <br/>Source code available on <a href="https://github.com/opendatakosovo/mp-asset-declaration-visualizer" target="_blank">GitHub</a>.
+          <br/>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

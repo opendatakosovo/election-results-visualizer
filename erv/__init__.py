@@ -6,7 +6,6 @@ import logging.config
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask
-from flask.ext.cache import Cache
 
 from utils.utils import Utils
 
@@ -17,6 +16,7 @@ utils = Utils()
 '''
 # Index page view.
 from views.index import Index
+from views.results import ElectionResults
 
 
 def create_app():
@@ -60,7 +60,7 @@ def load_config(app):
     app.config['SERVER_PORT'] = config.get('Application', 'SERVER_PORT')
     app.config['BASE_PATH'] = config.get('Application', 'BASE_PATH')
 
-    app.config['API_MP_ASSET_DECLARATIONS'] = config.get('Api', 'MP_ASSET_DECLARATIONS')
+    app.config['API_ELECTION_RESULTS'] = config.get('Api', 'ELECTION_RESULTS')
 
     # Logging path might be relative or starts from the root.
     # If it's relative then be sure to prepend the path with
@@ -72,12 +72,6 @@ def load_config(app):
         app.config['LOG_PATH'] = app_dir + '/' + log_path
 
     app.config['LOG_LEVEL'] = config.get('Logging', 'LEVEL').upper()
-
-    # Caching
-    app.config['CACHE_TYPE'] = config.get('Caching', 'TYPE')
-    app.config['CACHE_DEFAULT_TIMEOUT'] = int(config.get('Caching', 'DEFAULT_TIMEOUT'))
-
-    app.cache = Cache(app)
 
 
 def configure_logging(app):
@@ -122,6 +116,9 @@ def register_url_rules(app):
     :param app: the Flask application instance.
     '''
 
-    # Show index page, apply caching.
-    cached_index = app.cache.cached()(Index.as_view('index'))
-    app.add_url_rule('/', view_func=cached_index)
+    # Show instructional index page.
+    app.add_url_rule('/', view_func=Index.as_view('Index'))
+
+    app.add_url_rule(
+        '/<int:year>/<string:type_slug>/<string:commune_slug>',
+        view_func=ElectionResults.as_view('results'))
