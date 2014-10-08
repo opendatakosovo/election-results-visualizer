@@ -28,12 +28,9 @@ class ElectionResults(View):
         api_url = utils.get_api_url()
 
         request_url = "%s/%i/%s/%s" % (api_url, year, type_slug, commune_slug)
-        print request_url
 
         response = urlopen(request_url).read()
 
         election_results = json.loads(response)
-        print election_results
-        results = election_results[0]
 
-        return results
+        return election_results

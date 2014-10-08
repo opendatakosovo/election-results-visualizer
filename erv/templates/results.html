@@ -7,48 +7,71 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
-      // Load the Visualization API and the piechart package.
+      // Load the Visualization API and the columnchart package.
       google.load('visualization', '1.0', {'packages':['corechart']});
 
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(drawChart);
 
       // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
+      // instantiates the column chart, passes in the data and
       // draws it.
       function drawChart() {
 
-		var data = google.visualization.arrayToDataTable([
-          ["Party", "Votes"],
-          ['LVV', {{ election_results['LVV'] }}],
-          ['LDD', {{ election_results['LDD'] }}],
-          ['LDK', {{ election_results['LDK'] }}],
-          ['AKR', {{ election_results['AKR'] }}],
-          ['AAK', {{ election_results['AAK'] }}],
-          ['PDK', {{ election_results['PDK'] }}],
-          ['Others', {{ election_results['Others'] }}]
-        ]);
+    {% if election_results|length == 1 %}
 
-        var view = new google.visualization.DataView(data);
-      
+  		var data = google.visualization.arrayToDataTable([
+            ["Party", "Votes"],
+            {% for party in election_results[0]['parties'] %}
+              ['{{ party['party'] }}', {{ party.votes }}],
+            {% endfor %}
+          ]);
+      get_view(data, 'chart_div', "Election Results")
 
-      var options = {
-        title: "Election Results",
-        hAxis: {title: 'Party', titleTextStyle: {color: 'black'}},
-        vAxis: {title: 'Votes', titleTextStyle: {color: 'black'}},
-        width: 600,
-        height: 400,
-        legend: { position: "none" }
-      };
-      var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
-      chart.draw(view, options);
-  }
+    {% else %}
+
+      var data = google.visualization.arrayToDataTable([
+            ["Party", "Votes"],
+            {% for party in election_results[0]['parties'] %}
+              ['{{ party['party'] }}', {{ party.votes }}],
+            {% endfor %}
+          ]);
+      get_view(data, 'chart_div', "Election Results Round 1");
+      var data2 = google.visualization.arrayToDataTable([
+            ["Party", "Votes"],
+            {% for party in election_results[1]['parties'] %}
+              ['{{ party['party'] }}', {{ party.votes }}],
+            {% endfor %}
+          ]);
+      get_view(data2, 'chart_div2', "Election Results Round 2");
+
+    {% endif %}
+
+        function get_view(data, div, title){
+            var view = new google.visualization.DataView(data);
+            
+            // Set options for the chart
+            var options = {
+              title: title,
+              hAxis: {title: 'Party', titleTextStyle: {color: 'black'}},
+              vAxis: {title: 'Votes', titleTextStyle: {color: 'black'}},
+              width: 600,
+              height: 400,
+              legend: { position: "none" }
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById(div));
+            chart.draw(view, options);
+        }
+    }
     </script>
 </head>
 <body>
 
-	<!--Div that will hold the pie chart-->
+	<!--Div that will hold the column chart-->
     <div id="chart_div"></div>
+    <div id="chart_div2"></div>
 
 </body>
 </html>
